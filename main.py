@@ -54,7 +54,7 @@ def gen(cam):
     for image in cam.capture_continuous(stream, format="jpeg"):
         stream.seek(0)
         out_image = PIL.Image.open(image)
-        print(out_image)
+        yield out_image
 
 
 @web_app.route("/")
