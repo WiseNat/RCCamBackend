@@ -1,3 +1,7 @@
+from io import BytesIO
+
+import PIL
+from PIL.Image import Image
 from flask import Flask, Response
 from flask import request
 
@@ -45,6 +49,13 @@ if isRPI:
     ser_app = ServoController()
 
 
+def gen(cam):
+    stream = BytesIO()
+    for image in cam.capture_continuous(stream):
+        stream.seek(0)
+        out_image = PIL.Image.open(out_image)
+        print(out_image)
+
 @web_app.route("/")
 def landing_page():
     return "Nothing to see here"
@@ -68,7 +79,7 @@ def modify_servo():
 
 @web_app.route("/video/")
 def video_feed():
-    return Response(camera.capture_continuous(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen(camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == "__main__":
