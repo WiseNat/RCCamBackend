@@ -53,8 +53,9 @@ def gen(cam):
     stream = BytesIO()
     for image in cam.capture_continuous(stream):
         stream.seek(0)
-        out_image = PIL.Image.open(out_image)
+        out_image = PIL.Image.open(image)
         print(out_image)
+
 
 @web_app.route("/")
 def landing_page():
