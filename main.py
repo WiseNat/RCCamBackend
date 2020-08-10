@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Response
 from flask import request
 
 import time
@@ -6,7 +6,10 @@ import re
 
 try:
     import RPi.GPIO as GPIO
+    from picamera import PiCamera
 
+    camera = PiCamera()
+    camera.start_preview()
     isRPI = True
 except ModuleNotFoundError:
     print("WARNING: RPI functions won't work on this environment")
@@ -61,6 +64,11 @@ def modify_servo():
         print("Yaw: {}".format(request.args["y"]))
 
     return "Time to update the servo"
+
+
+@web_app.route("/video/")
+def video_feed():
+    return Response(camera.capture_continuous(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == "__main__":
