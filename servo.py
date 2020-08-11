@@ -19,7 +19,7 @@ class ServoController:
         self.pitch.start(0)
 
     @staticmethod
-    def change_servo(servo, amount, amount=0.1):
+    def change_servo(servo, amount, tm=0.1):
         servo.ChangeDutyCycle(amount)
-        time.sleep(amount)
+        time.sleep(tm)
         servo.ChangeDutyCycle(0)
