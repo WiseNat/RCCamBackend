@@ -55,7 +55,7 @@ def gen(cam):
         stream.seek(0)
         out_image = PIL.Image.open(image)
         yield (b"--frame\r\n"
-               b"Content-Type: image/jpeg\r\n\r\n" + out_image + b"\r\n")
+               b"Content-Type: image/jpeg\r\n\r\n" + bytearray(out_image) + b"\r\n")
 
 
 @web_app.route("/")
