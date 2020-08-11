@@ -5,57 +5,19 @@ from PIL.Image import Image
 from flask import Flask, Response
 from flask import request
 
-import time
 import re
 
-try:
-    import RPi.GPIO as GPIO
-    from picamera import PiCamera
-
-    camera = PiCamera()
-    camera.start_preview()
-    isRPI = True
-except ModuleNotFoundError:
-    print("WARNING: RPI functions won't work on this environment")
-    isRPI = False
-
-
-class ServoController:
-    def __init__(self):
-        GPIO.setmode(GPIO.BOARD)
-
-        # GPIO 12 initialisation, 50hz
-        servoPIN = 12
-        GPIO.setup(servoPIN, GPIO.OUT)
-        self.yaw = GPIO.PWM(servoPIN, 50)
-        self.yaw.start(0)
-
-        # GPIO 11 initialisation, 50hz
-        servoPIN = 11
-        GPIO.setup(servoPIN, GPIO.OUT)
-        self.pitch = GPIO.PWM(servoPIN, 50)
-        self.pitch.start(0)
-
-    @staticmethod
-    def change_servo(servo, amount, tm=0.1):
-        servo.ChangeDutyCycle(amount)
-        time.sleep(tm)
-        servo.ChangeDutyCycle(0)
-
+from camera import Camera
+from servo import ServoController
 
 web_app = Flask(__name__)
-
-if isRPI:
-    ser_app = ServoController()
+ser_app = ServoController()
 
 
-def gen(cam):
-    stream = BytesIO()
-    for image in cam.capture_continuous(stream, format="jpeg"):
-        stream.seek(0)
-        out_image = PIL.Image.open(image)
+def generator(cam):
+    while True:
         yield (b"--frame\r\n"
-               b"Content-Type: image/jpeg\r\n\r\n" + out_image.tobytes() + b"\r\n")
+               b"Content-Type: image/jpeg\r\n\r\n" + cam.get_frame() + b"\r\n")
 
 
 @web_app.route("/")
@@ -81,7 +43,7 @@ def modify_servo():
 
 @web_app.route("/video/")
 def video_feed():
-    return Response(gen(camera), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generator(Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == "__main__":
