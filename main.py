@@ -50,10 +50,8 @@ if isRPI:
 
 
 def gen(cam):
-    stream = BytesIO()
-    for image in cam.capture_continuous(stream, format="jpeg"):
-        stream.seek(0)
-        out_image = PIL.Image.open(image)
+    while True:
+        out_image = PIL.Image.open("test_photo.jpg")
         yield (b"--frame\r\n"
                b"Content-Type: image/jpeg\r\n\r\n" + out_image.tobytes() + b"\r\n")
 
