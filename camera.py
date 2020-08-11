@@ -37,8 +37,7 @@ class Camera(object):
             time.sleep(2)
 
             stream = io.BytesIO()
-            for foo in camera.capture_continuous(stream, "jpeg",
-                                                 use_video_port=True):
+            for foo in camera.capture_continuous(stream, "jpeg", use_video_port=True):
                 # Store current frame
                 stream.seek(0)
                 cls.frame = stream.read()

@@ -1,7 +1,3 @@
-from io import BytesIO
-
-import PIL
-from PIL.Image import Image
 from flask import Flask, Response
 from flask import request
 
@@ -21,13 +17,8 @@ def generator(cam):
 
 
 @web_app.route("/")
-def landing_page():
-    return "Nothing to see here"
-
-
-# Better to work with structurally and functionally
-@web_app.route("/servo/")
-def modify_servo():
+def main_page():
+    # Servo modification logic
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
     if "p" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["p"]) is not None:
@@ -38,12 +29,8 @@ def modify_servo():
         ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
         print("Yaw: {}".format(request.args["y"]))
 
-    return "Time to update the servo"
-
-
-@web_app.route("/video/")
-def video_feed():
-    return Response(generator(Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+    # Live video feed
+    return Response(generator(Camera()), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 if __name__ == "__main__":
