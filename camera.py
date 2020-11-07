@@ -30,9 +30,9 @@ class Camera:
 
     def capture_image(self):
         self.camera.resolution = (1920, 1080)
-        self.camera.capture("test.png")
+        self.camera.capture("test.jpeg")
         self.camera.resolution = (320, 240)
-        return "test.png"
+        return "test.jpeg"
 
     @classmethod
     def _thread(cls):
