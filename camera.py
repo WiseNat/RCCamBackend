@@ -21,6 +21,7 @@ class Camera(object):
 
     def get_frame(self):
         Camera.last_access = time.time()
+        self.initialise()
         return self.frame
 
     @classmethod
