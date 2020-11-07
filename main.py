@@ -6,8 +6,13 @@ import re
 from camera import Camera
 from servo import ServoController
 
+from picamera import PiCamera
+
 web_app = Flask(__name__)
 ser_app = ServoController()
+
+camera = Camera()
+camera.initialise()
 
 
 def generator(cam):
@@ -29,8 +34,13 @@ def main_page():
         ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
         print("Yaw: {}".format(request.args["y"]))
 
+    if "o" in arg_keys:
+        # Take photo
+        if request.args["o"] == "s":
+            return camera.frame
+
     # Live video feed
-    return Response(generator(Camera()), mimetype="multipart/x-mixed-replace; boundary=frame")
+    return Response(generator(camera), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 if __name__ == "__main__":
