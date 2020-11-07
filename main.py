@@ -1,4 +1,6 @@
-from flask import Flask, Response
+import io
+
+from flask import Flask, Response, send_file, send_from_directory
 from flask import request
 
 import re
@@ -42,8 +44,9 @@ def servo():
 
 @web_app.route("/photo")
 def photo():
-    header = b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + camera.frame + b"\r\n"
-    return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
+    return send_from_directory("", camera.capture_image(), as_attachment=True)
+    # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
+    # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 if __name__ == "__main__":

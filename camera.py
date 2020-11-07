@@ -28,10 +28,11 @@ class Camera:
         self.initialise()
         return self.frame
 
-    def get_current_frame(self):
+    def capture_image(self):
         self.camera.resolution = (1920, 1080)
         self.camera.capture("test.png")
         self.camera.resolution = (320, 240)
+        return "test.png"
 
     @classmethod
     def _thread(cls):
