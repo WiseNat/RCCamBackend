@@ -14,7 +14,7 @@ camera = Camera()
 
 def generator(cam):
     while True:
-        yield f"--frame\r\nContent-Type: image/jpeg\r\n\r\n{cam.get_frame()}\r\n".encode("UTF-8")
+        yield ("--frame\r\nContent-Type: image/jpeg\r\n\r\n" + cam.get_frame() + "\r\n").encode("UTF-8")
         # yield (b"--frame\r\n"
         #        b"Content-Type: image/jpeg\r\n\r\n" + cam.get_frame() + b"\r\n")
 
