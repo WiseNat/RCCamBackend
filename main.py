@@ -17,7 +17,7 @@ def generator(cam):
         yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + cam.get_frame() + b"\r\n"
 
 
-# GET message is send, and the server returns data
+# GET ~ GET message is send, and the server returns data
 # POST ~ Used to send HTML form data to the server. The data received by the POST method is not cached by the server.
 @web_app.route("/servo")
 def servo():
@@ -36,8 +36,7 @@ def servo():
 
 @web_app.route("/photo")
 def photo():
-    # Take photo
-    pass
+    return camera.frame
 
 
 @web_app.route("/")
