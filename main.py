@@ -42,10 +42,8 @@ def servo():
 
 @web_app.route("/photo")
 def photo():
-    print(camera.frame)
-    print(type(camera.frame))
-    test = b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + camera.frame + b"\r\n"
-    return Response(test, mimetype="multipart/x-mixed-replace; boundary=frame")
+    header = b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + camera.frame + b"\r\n"
+    return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 if __name__ == "__main__":
