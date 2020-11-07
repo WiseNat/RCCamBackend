@@ -6,6 +6,9 @@ import re
 from camera import Camera
 from servo import ServoController
 
+# GET ~ GET message is send, and the server returns data
+# POST ~ Used to send HTML form data to the server. The data received by the POST method is not cached by the server.
+
 web_app = Flask(__name__)
 ser_app = ServoController()
 
@@ -17,8 +20,11 @@ def generator(cam):
         yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + cam.get_frame() + b"\r\n"
 
 
-# GET ~ GET message is send, and the server returns data
-# POST ~ Used to send HTML form data to the server. The data received by the POST method is not cached by the server.
+@web_app.route("/")
+def main_page():
+    return Response(generator(camera), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+
 @web_app.route("/servo")
 def servo():
     arg_keys = [item.lower() for item in list(request.args.keys())]
@@ -36,12 +42,7 @@ def servo():
 
 @web_app.route("/photo")
 def photo():
-    return camera.frame
-
-
-@web_app.route("/")
-def main_page():
-    return Response(generator(camera), mimetype="multipart/x-mixed-replace; boundary=frame")
+    return Response(camera.frame, mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 if __name__ == "__main__":
