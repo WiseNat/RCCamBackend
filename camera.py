@@ -28,11 +28,21 @@ class Camera:
         self.initialise()
         return self.frame
 
-    def capture_image(self):
-        self.camera.resolution = (1920, 1080)
-        self.camera.capture("test.jpeg")
+    def capture_image(self, path="", ext="jpeg"):
+        # Appending a / to the end of path if it is missing
+        if path != "" and path[-1] != "/":
+            path += "/"
+
+        filename = f"{path}test.{ext}"
+
+        # Changing to higher resolution to capture image
+        self.camera.resolution = (3200, 2400)
+        self.camera.capture(filename)
+
+        # Reverting to live stream resolution
         self.camera.resolution = (320, 240)
-        return "test.jpeg"
+
+        return filename
 
     @classmethod
     def _thread(cls):
