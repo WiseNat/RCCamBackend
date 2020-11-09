@@ -33,16 +33,16 @@ class Camera:
         if path != "" and path[-1] != "/":
             path += "/"
 
-        filename = f"{path}test.{ext}"
+        filename = f"{path}test"
 
         # Changing to higher resolution to capture image
         self.camera.resolution = (3200, 2400)
-        self.camera.capture(filename)
+        self.camera.capture(f"{filename}.{ext}")
 
         # Reverting to live stream resolution
         self.camera.resolution = (320, 240)
 
-        return filename
+        return filename, ext
 
     @classmethod
     def _thread(cls):

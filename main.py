@@ -1,6 +1,7 @@
 import io
 import os
 
+from PIL import Image
 from flask import Flask, Response, send_file, send_from_directory
 from flask import request
 
@@ -51,10 +52,13 @@ def photo():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    jpeg_image = camera.capture_image(path=image_paths[0])  # JPEG
-    camera.capture_image(path=image_paths[1], ext="png")  # PNG
+    image_name, image_ext = camera.capture_image(path=image_paths[1])  # PNG
+    im = Image.open(f"{image_name}.{image_ext}").convert("RGB")
 
-    return send_from_directory("", jpeg_image, as_attachment=True)
+    jpeg_path = f"{image_name}.jpeg"
+    im.save(jpeg_path)  # JPEG
+
+    return send_from_directory("", jpeg_path, as_attachment=True)
     # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
     # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
