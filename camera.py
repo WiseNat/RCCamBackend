@@ -36,7 +36,7 @@ class Camera:
         filename = "test"
 
         # Changing to higher resolution to capture image
-        self.camera.resolution = (3200, 2400)
+        self.camera.resolution = (1920, 1440)
         self.camera.capture(f"{path}{filename}.{ext}")
 
         # Reverting to live stream resolution
