@@ -55,7 +55,7 @@ def photo():
     image_path, image_ext = camera.capture_image(path=image_paths[1], ext="PNG")  # PNG
     im = Image.open(f"{image_path}.{image_ext}").convert("RGB")
 
-    jpeg_path = f"{image_paths[0]}{image_path}.jpeg"
+    jpeg_path = f"{image_paths[0]}{image_path}.jpg"
     im.save(jpeg_path)  # JPEG
 
     return send_from_directory("", jpeg_path, as_attachment=True)
