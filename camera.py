@@ -28,16 +28,16 @@ class Camera:
         self.initialise()
         return self.frame
 
-    def capture_image(self, path="", ext="jpeg"):
+    def capture_image(self, path="", ext="png"):
         # Appending a / to the end of path if it is missing
         if path != "" and path[-1] != "/":
             path += "/"
 
-        filename = f"{path}test"
+        filename = "test"
 
         # Changing to higher resolution to capture image
         self.camera.resolution = (3200, 2400)
-        self.camera.capture(f"{filename}.{ext}")
+        self.camera.capture(f"{path}{filename}.{ext}")
 
         # Reverting to live stream resolution
         self.camera.resolution = (320, 240)

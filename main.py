@@ -46,16 +46,16 @@ def servo():
 
 @web_app.route("/photo")
 def photo():
-    image_paths = ["compressed_photos", "photos"]
+    image_paths = ["photos/", "compressed_photos/"]
 
     for path in image_paths:
         if not os.path.exists(path):
             os.mkdir(path)
 
-    image_path, image_ext = camera.capture_image(path=image_paths[1], ext="PNG")  # PNG
-    im = Image.open(f"{image_path}.{image_ext}").convert("RGB")
+    image_name, image_ext = camera.capture_image(path=image_paths[0])  # PNG
+    im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
 
-    jpeg_path = f"{image_paths[0]}{image_path}.jpg"
+    jpeg_path = f"{image_paths[1]}{image_name}.jpeg"
     im.save(jpeg_path)  # JPEG
 
     return send_from_directory("", jpeg_path, as_attachment=True)
