@@ -2,7 +2,7 @@ import io
 import os
 
 from PIL import Image
-from flask import Flask, Response, send_file, send_from_directory
+from flask import Flask, Response, send_file, send_from_directory, url_for, redirect
 from flask import request
 
 import re
@@ -42,6 +42,8 @@ def servo():
     if "y" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["y"]) is not None:
         ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
         print("Yaw: {}".format(request.args["y"]))
+
+    return redirect(url_for("/"))
 
 
 @web_app.route("/photo")

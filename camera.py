@@ -77,7 +77,13 @@ class Camera:
     @classmethod
     def _thread(cls):
         # Giving time for the camera to warm up
-        cls.camera.resolution = (320, 240)
+        while True:
+            try:
+                cls.camera.resolution = (320, 240)
+                break
+            except picamera.exc.PiCameraMMALError:
+                pass
+
         cls.camera.start_preview()
         time.sleep(2)
 
