@@ -7,13 +7,13 @@ from datetime import datetime
 import picamera
 
 
-def gen_filename(ext):
+def gen_filename(ext, path=""):
     counter = 1
     date = datetime.today()
     filename = f"{date.day}-{date.month}-{date.year} #{counter}"
 
     while True:
-        if os.path.isfile(f"{filename}.{ext}"):  # Increment counter if filename already exists
+        if os.path.isfile(f"{path}{filename}.{ext}"):  # Increment counter if filename already exists
             counter += 1
             filename = f"{date.day}-{date.month}-{date.year} #{counter}"
         else:  # Filename doesn't already exist, end loop
@@ -53,7 +53,7 @@ class Camera:
             path += "/"
 
         # Generating filename
-        filename = gen_filename(ext)
+        filename = gen_filename(ext, path=path)
 
         # Changing to higher resolution for capturing image
         self.camera.resolution = (1920, 1440)
