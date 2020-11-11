@@ -55,12 +55,22 @@ class Camera:
         # Generating filename
         filename = gen_filename(ext, path=path)
 
-        # Changing to higher resolution for capturing image
-        self.camera.resolution = (1920, 1440)
-        self.camera.capture(f"{path}{filename}.{ext}")
+        while True:
+            try:
+                # Changing to higher resolution for capturing image
+                self.camera.resolution = (1920, 1440)
+                self.camera.capture(f"{path}{filename}.{ext}")
+                break
+            except picamera.exc.PiCameraMMALError:
+                pass
 
-        # Reverting to live stream resolution
-        self.camera.resolution = (320, 240)
+        while True:
+            try:
+                # Reverting to live stream resolution
+                self.camera.resolution = (320, 240)
+                break
+            except picamera.exc.PiCameraMMALError:
+                pass
 
         return filename, ext
 
