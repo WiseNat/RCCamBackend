@@ -1,4 +1,8 @@
-from flask import Flask, Response
+import io
+import os
+
+from PIL import Image
+from flask import Flask, Response, send_file, send_from_directory
 from flask import request
 
 import re
@@ -42,10 +46,21 @@ def servo():
 
 @web_app.route("/photo")
 def photo():
-    print(camera.frame)
-    print(type(camera.frame))
-    test = b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + camera.frame + b"\r\n"
-    return Response(test, mimetype="multipart/x-mixed-replace; boundary=frame")
+    image_paths = ["photos/", "compressed_photos/"]
+
+    for path in image_paths:
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+    image_name, image_ext = camera.capture_image(path=image_paths[0])  # PNG
+    im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
+
+    jpeg_path = f"{image_paths[1]}{image_name}.jpeg"
+    im.save(jpeg_path)  # JPEG
+
+    return send_from_directory("", jpeg_path, as_attachment=True)
+    # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
+    # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 if __name__ == "__main__":
