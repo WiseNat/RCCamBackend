@@ -43,7 +43,7 @@ def servo():
         ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
         print("Yaw: {}".format(request.args["y"]))
 
-    return redirect(url_for("/"))
+    return redirect(url_for("main_page"))
 
 
 @web_app.route("/photo")
