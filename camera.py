@@ -10,12 +10,12 @@ import picamera
 def gen_filename(ext):
     counter = 1
     date = datetime.today()
-    filename = f"{date.day}-{date.month}-{date.year} #{counter}.{ext}"
+    filename = f"{date.day}-{date.month}-{date.year} #{counter}"
 
     while True:
-        if os.path.isfile(filename):  # Increment counter if filename already exists
+        if os.path.isfile(f"{filename}.{ext}"):  # Increment counter if filename already exists
             counter += 1
-            filename = f"{date.day}-{date.month}-{date.year} #{counter}.{ext}"
+            filename = f"{date.day}-{date.month}-{date.year} #{counter}"
         else:  # Filename doesn't already exist, end loop
             break
 
@@ -46,22 +46,6 @@ class Camera:
         Camera.last_access = time.time()
         self.initialise()
         return self.frame
-
-    # VAR currentFilenames = get_filenames_as_list()
-    # VAR loop_done = False
-    #
-    # VAR datetime = get_current_datetime()
-    # VAR filename = datetime.toString()
-    # VAR counter = 1
-    #
-    # WHILE loop_done == False DO
-    #     IF filename in currentFilenames DO
-    #         counter = counter + 1
-    #     ELSE DO
-    #         loop_done = True
-    #     ENDIF
-    #
-    #     VAR filename = datetime.toString() + “ #” + counter.toString()
 
     def capture_image(self, path="", ext="png"):
         # Appending a / to the end of path if it is missing
