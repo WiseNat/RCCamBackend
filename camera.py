@@ -27,6 +27,9 @@ class Camera:
     frame = None  # Current frame is stored here by background thread
     last_access = 0  # Time of last client access to the camera
 
+    curCapture = False
+    curStream = False
+
     camera = picamera.PiCamera()
 
     # camera.hflip = True
@@ -48,6 +51,11 @@ class Camera:
         return self.frame
 
     def capture_image(self, path="", ext="png"):
+        Camera.curCapture = True
+
+        while Camera.curStream is True:
+            pass
+
         # Appending a / to the end of path if it is missing
         if path != "" and path[-1] != "/":
             path += "/"
@@ -55,34 +63,24 @@ class Camera:
         # Generating filename
         filename = gen_filename(ext, path=path)
 
-        while True:
-            try:
-                # Changing to higher resolution for capturing image
-                self.camera.resolution = (1920, 1440)
-                self.camera.capture(f"{path}{filename}.{ext}")
-                break
-            except picamera.exc.PiCameraMMALError:
-                pass
+        # Changing to higher resolution for capturing image
+        self.camera.resolution = (1920, 1440)
+        self.camera.capture(f"{path}{filename}.{ext}")
 
-        while True:
-            try:
-                # Reverting to live stream resolution
-                self.camera.resolution = (320, 240)
-                break
-            except picamera.exc.PiCameraMMALError:
-                pass
+        # Reverting to live stream resolution
+        self.camera.resolution = (320, 240)
+
+        Camera.curCapture = False
 
         return filename, ext
 
     @classmethod
     def _thread(cls):
+        # Setting currently streaming flag to true
+        Camera.curStream = True
+
         # Giving time for the camera to warm up
-        while True:
-            try:
-                cls.camera.resolution = (320, 240)
-                break
-            except picamera.exc.PiCameraMMALError:
-                pass
+        cls.camera.resolution = (320, 240)
 
         cls.camera.start_preview()
         time.sleep(2)
@@ -101,4 +99,14 @@ class Camera:
             if time.time() - cls.last_access > 10:
                 cls.camera.stop_preview()
                 break
+
+            # Wait here for Capture camera process to finish if it requests to be run
+            if Camera.curCapture is True:
+                Camera.curStream = False
+
+                while Camera.curCapture is True:
+                    pass
+
+                Camera.curStream = True
+
         cls.thread = None
