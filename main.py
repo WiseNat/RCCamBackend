@@ -60,7 +60,7 @@ def photo():
     jpeg_name = f"{image_name}.jpeg"
     im.save(f"{image_paths[1]}{jpeg_name}")  # JPEG
 
-    return send_from_directory(image_paths[1], jpeg_name)
+    return send_from_directory(image_paths[1], jpeg_name, as_attachment=True)
     # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
     # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
