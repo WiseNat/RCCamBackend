@@ -10,12 +10,12 @@ import picamera
 def gen_filename(ext, path=""):
     counter = 1
     date = datetime.today()
-    filename = f"{date.day}-{date.month}-{date.year}-#{counter}"
+    filename = f"{date.day}-{date.month}-{date.year}-{counter}"
 
     while True:
         if os.path.isfile(f"{path}{filename}.{ext}"):  # Increment counter if filename already exists
             counter += 1
-            filename = f"{date.day}-{date.month}-{date.year}-#{counter}"
+            filename = f"{date.day}-{date.month}-{date.year}-{counter}"
         else:  # Filename doesn't already exist, end loop
             break
 
