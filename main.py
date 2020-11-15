@@ -2,7 +2,7 @@ import io
 import os
 
 from PIL import Image
-from flask import Flask, Response, send_file, send_from_directory
+from flask import Flask, Response, send_file, send_from_directory, url_for, redirect
 from flask import request
 
 import re
@@ -43,6 +43,8 @@ def servo():
         ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
         print("Yaw: {}".format(request.args["y"]))
 
+    return redirect(url_for("main_page"))
+
 
 @web_app.route("/photo")
 def photo():
@@ -55,10 +57,10 @@ def photo():
     image_name, image_ext = camera.capture_image(path=image_paths[0])  # PNG
     im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
 
-    jpeg_path = f"{image_paths[1]}{image_name}.jpeg"
-    im.save(jpeg_path)  # JPEG
+    jpeg_name = f"{image_name}.jpeg"
+    im.save(f"{image_paths[1]}{jpeg_name}")  # JPEG
 
-    return send_from_directory("", jpeg_path, as_attachment=True)
+    return send_from_directory(image_paths[1], jpeg_name, as_attachment=True)
     # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
     # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
