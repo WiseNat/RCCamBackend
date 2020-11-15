@@ -50,7 +50,7 @@ def servo():
 
 
 @web_app.route("/take_photo/", defaults={"dur": 0})
-@web_app.route("/take_photo/<int:dur>")
+@web_app.route("/take_photo/<float:dur>")
 def take_photo(dur):
     image_paths = ["photos/", "compressed_photos/"]
 
