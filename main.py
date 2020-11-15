@@ -49,8 +49,9 @@ def servo():
     return redirect(url_for("main_page"))
 
 
+@web_app.route("/take_photo/", defaults={"dur": 0})
 @web_app.route("/take_photo/<int:dur>")
-def take_photo(dur=0):
+def take_photo(dur):
     image_paths = ["photos/", "compressed_photos/"]
 
     time.sleep(dur)
