@@ -67,9 +67,9 @@ def take_photo():
     # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-@web_app.route("/get_photo/<path:path>")
-def get_photo(path):
-    return f"{path}\n{escape(path)}"
+@web_app.route("/get_photo/<path:filename>")
+def get_photo(filename):
+    return send_from_directory("compressed_photos/", filename, as_attachment=True)
     # try:
     #     return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
     # except FileNotFoundError:
