@@ -2,10 +2,12 @@ import io
 import os
 
 from PIL import Image
-from flask import Flask, Response, send_file, send_from_directory, url_for, redirect
+from flask import Flask, Response, send_file, send_from_directory, url_for, redirect, abort
 from flask import request
 
 import re
+
+from markupsafe import escape
 
 from camera import Camera
 from servo import ServoController
@@ -46,8 +48,8 @@ def servo():
     return redirect(url_for("main_page"))
 
 
-@web_app.route("/photo")
-def photo():
+@web_app.route("/take_photo")
+def take_photo():
     image_paths = ["photos/", "compressed_photos/"]
 
     for path in image_paths:
@@ -63,6 +65,16 @@ def photo():
     return send_from_directory(image_paths[1], jpeg_name, as_attachment=True)
     # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
     # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
+
+
+@web_app.route("/get_photo/<path:path>")
+def get_photo(path):
+    print(path)
+    print(escape(path))
+    # try:
+    #     return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
+    # except FileNotFoundError:
+    #     abort(404)
 
 
 if __name__ == "__main__":
