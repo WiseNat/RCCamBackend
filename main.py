@@ -70,10 +70,6 @@ def take_photo():
 @web_app.route("/get_photo/<path:filename>")
 def get_photo(filename):
     return send_from_directory("compressed_photos/", filename, as_attachment=True)
-    # try:
-    #     return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
-    # except FileNotFoundError:
-    #     abort(404)
 
 
 if __name__ == "__main__":
