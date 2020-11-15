@@ -1,5 +1,6 @@
 import io
 import os
+import time
 
 from PIL import Image
 from flask import Flask, Response, send_file, send_from_directory, url_for, redirect, abort
@@ -48,9 +49,11 @@ def servo():
     return redirect(url_for("main_page"))
 
 
-@web_app.route("/take_photo")
-def take_photo():
+@web_app.route("/take_photo/<int:dur>")
+def take_photo(dur=0):
     image_paths = ["photos/", "compressed_photos/"]
+
+    time.sleep(dur)
 
     for path in image_paths:
         if not os.path.exists(path):
@@ -63,8 +66,6 @@ def take_photo():
     im.save(f"{image_paths[1]}{jpeg_name}")  # JPEG
 
     return send_from_directory(image_paths[1], jpeg_name, as_attachment=True)
-    # header = b"--frame\r\nContent-Type: image/png\r\n\r\n" + camera.get_current_frame() + b"\r\n"
-    # return Response(header, mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 @web_app.route("/get_photo/<path:filename>")
