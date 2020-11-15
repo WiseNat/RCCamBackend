@@ -69,8 +69,7 @@ def take_photo():
 
 @web_app.route("/get_photo/<path:path>")
 def get_photo(path):
-    print(path)
-    print(escape(path))
+    return f"{path}\n{escape(path)}"
     # try:
     #     return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
     # except FileNotFoundError:
