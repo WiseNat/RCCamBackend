@@ -1,14 +1,10 @@
-import io
 import os
+import re
 import time
 
 from PIL import Image
-from flask import Flask, Response, send_file, send_from_directory, url_for, redirect, abort
+from flask import Flask, send_from_directory, url_for, redirect, render_template, Response
 from flask import request
-
-import re
-
-from markupsafe import escape
 
 from camera import Camera
 from servo import ServoController
@@ -18,7 +14,6 @@ from servo import ServoController
 
 web_app = Flask(__name__)
 ser_app = ServoController()
-
 camera = Camera()
 
 
@@ -29,6 +24,11 @@ def generator(cam):
 
 @web_app.route("/")
 def main_page():
+    return render_template("base.html")
+
+
+@web_app.route("/video")
+def video_feed():
     return Response(generator(camera), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
