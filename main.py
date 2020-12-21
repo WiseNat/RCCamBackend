@@ -13,6 +13,8 @@ from servo import ServoController
 # POST ~ Used to send HTML form data to the server. The data received by the POST method is not cached by the server.
 
 web_app = Flask(__name__)
+web_app.config["FLASK_APP"] = "main.py"
+
 ser_app = ServoController()
 camera = Camera()
 
