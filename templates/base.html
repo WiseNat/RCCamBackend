@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Video Feed</title>
-
+    <style>
+        body {
+            background-image: url('{{ url_for("video_feed") }}')
+        }
+    </style>
 </head>
 <body>
-    <img src="{{ url_for("video_feed") }}" alt="Video Stream">
+
 </body>
 </html>
