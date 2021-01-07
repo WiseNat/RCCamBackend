@@ -37,15 +37,23 @@ def video_feed():
 def servo():
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
-    # Servo pitch modification logic
-    if "p" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["p"]) is not None:
-        ser_app.change_servo(ser_app.pitch, float(request.args["p"]))
-        print("Pitch: {}".format(request.args["p"]))
+    # Acceptable value range for servos
+    smin = 2.0
+    smax = 12.0
 
-    # Servo yaw modification logic
-    if "y" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["y"]) is not None:
-        ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
-        print("Yaw: {}".format(request.args["y"]))
+    # Servo pitch modification logic
+    for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
+        if char in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args[char]) is not None:
+            val = float(request.args[char])
+            if val < smin:
+                print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smin}")
+                val = smin
+            elif val > smax:
+                print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smax}")
+                val = smax
+
+            ser_app.change_servo(ref, val)
+            print(f"{servo_name} rotation set to {val}")
 
     return redirect(url_for("main_page"))
 
