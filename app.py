@@ -38,38 +38,22 @@ def servo():
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
     # Acceptable value range for servos
-    servo_min = 2
-    servo_max = 12
+    smin = 2
+    smax = 12
 
     # Servo pitch modification logic
-    if "p" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["p"]) is not None:
-        val = float(request.args["p"])
-        if val < servo_min:
-            print("Pitch value '{0}' exceeded range ({min} -> {max})\nPitch value set to {min}"
-                  .format(val, min=servo_min, max=servo_max))
-            val = servo_min
-        elif val > servo_max:
-            print("Pitch value '{0}' exceeded range ({min} -> {max})\nPitch value set to {max}"
-                  .format(val, min=servo_min, max=servo_max))
-            val = servo_max
+    for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
+        if char in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args[char]) is not None:
+            val = float(request.args[char])
+            if val < smin:
+                print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smin}")
+                val = smin
+            elif val > smax:
+                print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smax}")
+                val = smax
 
-        ser_app.change_servo(ser_app.pitch, val)
-        print("Pitch: {}".format(val))
-
-    # Servo yaw modification logic
-    if "y" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["y"]) is not None:
-        val = float(request.args["y"])
-        if val < servo_min:
-            print("Yaw value '{0}' exceeded range ({min} -> {max})\nYaw value set to {min}"
-                  .format(val, min=servo_min, max=servo_max))
-            val = servo_min
-        elif val > servo_max:
-            print("Yaw value '{0}' exceeded range ({min} -> {max})\nYaw value set to {max}"
-                  .format(val, min=servo_min, max=servo_max))
-            val = servo_max
-
-        ser_app.change_servo(ser_app.yaw, val)
-        print("Yaw: {}".format(val))
+            ser_app.change_servo(ref, val)
+            print(f"{servo_name} rotation set to {val}")
 
     return redirect(url_for("main_page"))
 
