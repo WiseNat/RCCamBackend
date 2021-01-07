@@ -2,24 +2,30 @@ import RPi.GPIO as GPIO
 import time
 
 
+class Servo(GPIO.PWM):
+    def __init__(self, pin, hz):
+        GPIO.setup(pin, GPIO.OUT)
+        super().__init__(pin, hz)
+        super().start(0)
+
+        self.current = 0
+
+
 class ServoController:
     def __init__(self):
         GPIO.setmode(GPIO.BOARD)
 
         # GPIO 12 initialisation, 50hz
-        servoPIN = 12
-        GPIO.setup(servoPIN, GPIO.OUT)
-        self.yaw = GPIO.PWM(servoPIN, 50)
-        self.yaw.start(0)
+        self.yaw = Servo(pin=12, hz=50)
 
         # GPIO 11 initialisation, 50hz
-        servoPIN = 11
-        GPIO.setup(servoPIN, GPIO.OUT)
-        self.pitch = GPIO.PWM(servoPIN, 50)
-        self.pitch.start(0)
+        self.pitch = Servo(pin=11, hz=50)
 
     @staticmethod
     def change_servo(servo, amount, tm=0.1):
-        servo.ChangeDutyCycle(amount)
-        time.sleep(tm)
-        servo.ChangeDutyCycle(0)
+        if servo.current != amount:
+            servo.ChangeDutyCycle(amount)
+            servo.current = amount
+
+            time.sleep(tm)
+            servo.ChangeDutyCycle(0)
