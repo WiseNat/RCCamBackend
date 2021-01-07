@@ -43,31 +43,29 @@ def servo():
 
     # Servo pitch modification logic
     if "p" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["p"]) is not None:
-        if request.args["p"] < servo_min:
+        val = float(request.args["p"])
+        if val < servo_min:
             print("Pitch value exceeded range (2 -> 13)\nPitch value set to 2")
             val = servo_min
-        elif request.args["p"] > servo_max:
+        elif val > servo_max:
             print("Pitch value exceeded range (2 -> 13)\nPitch value set to 13")
             val = servo_max
-        else:
-            val = float(request.args["p"])
 
         ser_app.change_servo(ser_app.pitch, val)
-        print("Pitch: {}".format(request.args["p"]))
+        print("Pitch: {}".format(val))
 
     # Servo yaw modification logic
     if "y" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["y"]) is not None:
-        if request.args["y"] < servo_min:
+        val = float(request.args["y"])
+        if val < servo_min:
             print("Yaw value exceeded range (2 -> 13)\nYaw value set to 2")
             val = servo_min
-        elif request.args["y"] > servo_max:
+        elif val > servo_max:
             print("Yaw value exceeded range (2 -> 13)\nYaw value set to 13")
             val = servo_max
-        else:
-            val = float(request.args["y"])
 
         ser_app.change_servo(ser_app.yaw, val)
-        print("Yaw: {}".format(request.args["y"]))
+        print("Yaw: {}".format(val))
 
     return redirect(url_for("main_page"))
 
