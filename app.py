@@ -37,15 +37,25 @@ def video_feed():
 def servo():
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
+    # Acceptable value range for servos
+    servo_min = 2
+    servo_max = 13
+
     # Servo pitch modification logic
     if "p" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["p"]) is not None:
-        ser_app.change_servo(ser_app.pitch, float(request.args["p"]))
-        print("Pitch: {}".format(request.args["p"]))
+        if not servo_min <= request.args["p"] <= servo_max:
+            print("Pitch value exceeds range (2 -> 13)")
+        else:
+            ser_app.change_servo(ser_app.pitch, float(request.args["p"]))
+            print("Pitch: {}".format(request.args["p"]))
 
     # Servo yaw modification logic
     if "y" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["y"]) is not None:
-        ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
-        print("Yaw: {}".format(request.args["y"]))
+        if not servo_min <= request.args["y"] <= servo_max:
+            print("Yaw value exceeds range (2 -> 13)")
+        else:
+            ser_app.change_servo(ser_app.yaw, float(request.args["y"]))
+            print("Yaw: {}".format(request.args["y"]))
 
     return redirect(url_for("main_page"))
 
