@@ -39,16 +39,18 @@ def servo():
 
     # Acceptable value range for servos
     servo_min = 2
-    servo_max = 13
+    servo_max = 12
 
     # Servo pitch modification logic
     if "p" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["p"]) is not None:
         val = float(request.args["p"])
         if val < servo_min:
-            print("Pitch value exceeded range (2 -> 13)\nPitch value set to 2")
+            print("Pitch value '{0}' exceeded range ({min} -> {max})\nPitch value set to {min}"
+                  .format(val, min=servo_min, max=servo_max))
             val = servo_min
         elif val > servo_max:
-            print("Pitch value exceeded range (2 -> 13)\nPitch value set to 13")
+            print("Pitch value '{0}' exceeded range ({min} -> {max})\nPitch value set to {max}"
+                  .format(val, min=servo_min, max=servo_max))
             val = servo_max
 
         ser_app.change_servo(ser_app.pitch, val)
@@ -58,10 +60,12 @@ def servo():
     if "y" in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args["y"]) is not None:
         val = float(request.args["y"])
         if val < servo_min:
-            print("Yaw value exceeded range (2 -> 13)\nYaw value set to 2")
+            print("Yaw value '{0}' exceeded range ({min} -> {max})\nYaw value set to {min}"
+                  .format(val, min=servo_min, max=servo_max))
             val = servo_min
         elif val > servo_max:
-            print("Yaw value exceeded range (2 -> 13)\nYaw value set to 13")
+            print("Yaw value '{0}' exceeded range ({min} -> {max})\nYaw value set to {max}"
+                  .format(val, min=servo_min, max=servo_max))
             val = servo_max
 
         ser_app.change_servo(ser_app.yaw, val)
