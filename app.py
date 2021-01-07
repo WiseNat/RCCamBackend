@@ -38,8 +38,8 @@ def servo():
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
     # Acceptable value range for servos
-    smin = 2
-    smax = 12
+    smin = 2.0
+    smax = 12.0
 
     # Servo pitch modification logic
     for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
