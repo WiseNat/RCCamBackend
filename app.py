@@ -6,7 +6,7 @@ from PIL import Image
 from flask import Flask, send_from_directory, url_for, redirect, render_template, Response
 from flask import request
 
-from camera import Camera
+from camera import Camera, gen_filename
 from servo import ServoController
 
 # GET ~ GET message is send, and the server returns data
@@ -62,7 +62,7 @@ def servo():
 @web_app.route("/take_photo/<string:dur>")
 def take_photo(dur):
     dur = float(dur)
-    image_paths = ["photos/", "compressed_photos/"]
+    image_paths = ("photos/", "compressed_photos/")
 
     time.sleep(dur)
 
@@ -73,7 +73,8 @@ def take_photo(dur):
     image_name, image_ext = camera.capture_image(path=image_paths[0])  # PNG
     im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
 
-    jpeg_name = f"{image_name}.jpeg"
+    image_ext = "jpeg"
+    jpeg_name = f"{gen_filename(image_ext, image_paths[1])}.{image_ext}"
     im.save(f"{image_paths[1]}{jpeg_name}")  # JPEG
 
     return send_from_directory(image_paths[1], jpeg_name, as_attachment=True)
