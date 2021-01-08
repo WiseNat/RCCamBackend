@@ -71,7 +71,7 @@ def servo():
 @web_app.route("/take_photo/", defaults={"dur": "0"})
 @web_app.route("/take_photo/<string:dur>")
 def take_photo(dur):
-    if is_number(dur):
+    if is_number(dur) and dur > 0:
         time.sleep(float(dur))
 
     image_paths = ("photos/", "compressed_photos/")
