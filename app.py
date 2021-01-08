@@ -23,6 +23,16 @@ def generator(cam):
         yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + cam.get_frame() + b"\r\n"
 
 
+def is_number(num):
+    """
+    Determines whether a given input is a number or not. Valid for num∈ℚ
+
+    :param num: string, int, float
+    :return: true if the given value is a number, false if not.
+    """
+    return True if type(num) in [int, float] or re.match(r"^-?\d+(?:\.\d+)?$", num) is not None else False
+
+
 @web_app.route("/")
 def main_page():
     return render_template("base.html")
@@ -43,7 +53,7 @@ def servo():
 
     # Servo pitch modification logic
     for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
-        if char in arg_keys and re.match(r"^-?\d+(?:\.\d+)?$", request.args[char]) is not None:
+        if char in arg_keys and is_number(request.args[char]):
             val = float(request.args[char])
             if val < smin:
                 print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smin}")
@@ -61,10 +71,10 @@ def servo():
 @web_app.route("/take_photo/", defaults={"dur": "0"})
 @web_app.route("/take_photo/<string:dur>")
 def take_photo(dur):
-    dur = float(dur)
-    image_paths = ("photos/", "compressed_photos/")
+    if is_number(dur):
+        time.sleep(float(dur))
 
-    time.sleep(dur)
+    image_paths = ("photos/", "compressed_photos/")
 
     for path in image_paths:
         if not os.path.exists(path):
