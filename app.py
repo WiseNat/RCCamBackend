@@ -76,9 +76,9 @@ def take_photo():
     resHeight = request.args.get("h", "")
 
     if resHeight == "" or resWidth == "":
-        res = (resHeight, resWidth)
-    else:
         res = (1920, 1080)
+    else:
+        res = (resHeight, resWidth)
 
     if dur != "" and is_number(dur) and float(dur) > 0:
         time.sleep(float(dur))
