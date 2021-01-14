@@ -22,6 +22,14 @@ def gen_filename(ext, path=""):
     return filename
 
 
+def reduceResolution(cur_res, max_res):
+    divisor = max(cur_res[0] / max_res[0], cur_res[1] / max_res[1])
+    cur_res[0] //= divisor
+    cur_res[1] //= divisor
+
+    return list(map(int, cur_res))
+
+
 class Camera:
     thread = None  # Background thread that reads frames from camera
     frame = None  # Current frame is stored here by background thread
@@ -50,7 +58,13 @@ class Camera:
         self.initialise()
         return self.frame
 
-    def capture_image(self, path="", ext="png"):
+    def capture_image(self, path="", ext="png", res=None):
+        maxRes = (1920, 1080)
+        if res is None:
+            res = maxRes
+        elif res[0] > maxRes[0] or res[1] > maxRes[1]:
+            res = reduceResolution(res, maxRes)
+
         Camera.curCapture = True
 
         while Camera.curStream is True:
@@ -66,7 +80,7 @@ class Camera:
         # Changing to higher resolution for capturing image
         while True:
             try:
-                self.camera.resolution = (1920, 1440)
+                self.camera.resolution = res
                 break
             except picamera.exc.PiCameraMMALError:
                 pass
