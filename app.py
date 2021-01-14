@@ -13,7 +13,6 @@ from servo import ServoController
 # POST ~ Used to send HTML form data to the server. The data received by the POST method is not cached by the server.
 
 web_app = Flask(__name__)
-web_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 ser_app = ServoController()
 camera = Camera()
@@ -69,21 +68,33 @@ def servo():
     return redirect(url_for("main_page"))
 
 
-@web_app.route("/take_photo/", defaults={"dur": "0"})
-@web_app.route("/take_photo/<string:dur>")
-def take_photo(dur):
-    if is_number(dur) and float(dur) > 0:
+@web_app.route("/take_photo/")
+def take_photo():
+    # Get args and declare if missing
+    dur = request.args.get("dur", "")
+    resWidth = request.args.get("w", "")
+    resHeight = request.args.get("h", "")
+
+    if resHeight == "" or resWidth == "":
+        res = (resHeight, resWidth)
+    else:
+        res = (1920, 1080)
+
+    if dur != "" and is_number(dur) and float(dur) > 0:
         time.sleep(float(dur))
 
     image_paths = ("photos/", "compressed_photos/")
 
+    # Make image paths if they don't exist
     for path in image_paths:
         if not os.path.exists(path):
             os.mkdir(path)
 
-    image_name, image_ext = camera.capture_image(path=image_paths[0])  # PNG
-    im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
+    # Capture image as PNG
+    image_name, image_ext = camera.capture_image(path=image_paths[0])
 
+    # Convert and save image as JPEG
+    im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
     image_ext = "jpeg"
     jpeg_name = f"{gen_filename(image_ext, image_paths[1])}.{image_ext}"
     im.save(f"{image_paths[1]}{jpeg_name}")  # JPEG
