@@ -22,7 +22,7 @@ class ServoController:
         self.pitch = Servo(pin=11, hz=50)
 
     @staticmethod
-    def change_servo(servo, amount, tm=0.1):
+    def change_servo(servo, amount, tm=0.3):
         if servo.current != amount:
             servo.ChangeDutyCycle(amount)
             servo.current = amount
