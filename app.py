@@ -30,7 +30,7 @@ def is_number(num):
     :param num: string, int, float
     :return: true if the given value is a number, false if not.
     """
-    return True if type(num) in [int, float] or re.match(r"^-?\d+(?:\.\d+)?$", num) is not None else False
+    return True if type(num) in [int, float] or re.match(r"^-?\d+(?:\.\d*)?$", num) is not None else False
 
 
 @web_app.route("/")
