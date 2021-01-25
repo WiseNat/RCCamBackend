@@ -45,8 +45,8 @@ def video_feed():
 
 @web_app.route("/servo", methods=["POST", "GET"])
 def servo():
-    print(f"Pitch {request.values.get('p', 'no pitch')}")
-    print(f"Pitch {request.values.get('y', 'no yaw')}")
+    print(f"Pitch: {request.values.get('p', 'No Pitch')}")
+    print(f"Yaw: {request.values.get('y', 'No Yaw')}")
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
     # Acceptable value range for servos
