@@ -63,11 +63,10 @@ def servo():
                 print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smax}")
                 val = smax
 
-            ser_app.change_servo(ref, val+2)
+            ser_app.change_servo(ref, val + 2)
             print(f"{servo_name} rotation set to {val}")
 
-    if request.method == "GET":
-        return redirect(url_for("main_page"))
+    return redirect(url_for("main_page"))
 
 
 @web_app.route("/take_photo/")
