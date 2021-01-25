@@ -43,8 +43,9 @@ def video_feed():
     return Response(generator(camera), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-@web_app.route("/servo")
+@web_app.route("/servo", methods=["POST", "GET"])
 def servo():
+    print(request.values)
     arg_keys = [item.lower() for item in list(request.args.keys())]
 
     # Acceptable value range for servos
@@ -65,7 +66,8 @@ def servo():
             ser_app.change_servo(ref, val+2)
             print(f"{servo_name} rotation set to {val}")
 
-    return redirect(url_for("main_page"))
+    if request.method == "GET":
+        return redirect(url_for("main_page"))
 
 
 @web_app.route("/take_photo/")
