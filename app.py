@@ -51,8 +51,8 @@ def servo():
 
     # Servo pitch modification logic
     for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
-        val = request.values.get(char, "")
-        if val != "" and is_number(val):
+        val = request.values.get(char, "a")
+        if is_number(val):
             val = float(val)
             if val < smin:
                 print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smin}")
