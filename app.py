@@ -45,18 +45,15 @@ def video_feed():
 
 @web_app.route("/servo", methods=["POST", "GET"])
 def servo():
-    print(f"Pitch: {request.values.get('p', 'No Pitch')}")
-    print(f"Yaw: {request.values.get('y', 'No Yaw')}")
-    arg_keys = [item.lower() for item in list(request.args.keys())]
-
     # Acceptable value range for servos
     smin = 0.0
     smax = 10.0
 
     # Servo pitch modification logic
     for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
-        if char in arg_keys and is_number(request.args[char]):
-            val = float(request.args[char])
+        val = request.values.get(char, "")
+        if val != "" and is_number(val):
+            val = float(val)
             if val < smin:
                 print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smin}")
                 val = smin
