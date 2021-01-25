@@ -30,7 +30,7 @@ def is_number(num):
     :param num: string, int, float
     :return: true if the given value is a number, false if not.
     """
-    return True if type(num) in [int, float] or re.match(r"^-?\d+(?:\.\d+)?$", num) is not None else False
+    return True if type(num) in [int, float] or re.match(r"^-?\d+(?:\.\d*)?$", num) is not None else False
 
 
 @web_app.route("/")
@@ -43,18 +43,17 @@ def video_feed():
     return Response(generator(camera), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-@web_app.route("/servo")
+@web_app.route("/servo", methods=["POST", "GET"])
 def servo():
-    arg_keys = [item.lower() for item in list(request.args.keys())]
-
     # Acceptable value range for servos
-    smin = 2.0
-    smax = 12.0
+    smin = 0.0
+    smax = 10.0
 
     # Servo pitch modification logic
     for char, servo_name, ref in (("p", "Pitch", ser_app.pitch), ("y", "Yaw", ser_app.yaw)):
-        if char in arg_keys and is_number(request.args[char]):
-            val = float(request.args[char])
+        val = request.values.get(char, "a")
+        if is_number(val):
+            val = float(val)
             if val < smin:
                 print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smin}")
                 val = smin
@@ -62,7 +61,7 @@ def servo():
                 print(f"{servo_name} value '{val}' exceeded range ({smin} -> {smax})\n{servo_name} value set to {smax}")
                 val = smax
 
-            ser_app.change_servo(ref, val)
+            ser_app.change_servo(ref, val + 2)
             print(f"{servo_name} rotation set to {val}")
 
     return redirect(url_for("main_page"))
