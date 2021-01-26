@@ -58,24 +58,18 @@ class Camera:
         self.initialise()
         return self.frame
 
-    def capture_image(self, path="", ext="png", res=None):
+    def capture_image(self, filename="", format="png", res=None):
+        # Changing resolution
         maxRes = (1920, 1080)
         if res is None:
             res = maxRes
         elif res[0] > maxRes[0] or res[1] > maxRes[1]:
             res = reduceResolution(res, maxRes)
 
+        # Stopping video feed
         Camera.curCapture = True
-
         while Camera.curStream is True:
             pass
-
-        # Appending a / to the end of path if it is missing
-        if path != "" and path[-1] != "/":
-            path += "/"
-
-        # Generating filename
-        filename = gen_filename(ext, path=path)
 
         # Changing to higher resolution for capturing image
         while True:
@@ -85,7 +79,7 @@ class Camera:
             except picamera.exc.PiCameraMMALError:
                 pass
 
-        self.camera.capture(f"{path}{filename}.{ext}")
+        self.camera.capture(filename, format=format)
 
         # Reverting to live stream resolution
         while True:
@@ -96,8 +90,6 @@ class Camera:
                 pass
 
         Camera.curCapture = False
-
-        return filename, ext
 
     @classmethod
     def _thread(cls):

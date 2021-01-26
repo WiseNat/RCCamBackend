@@ -90,7 +90,9 @@ def take_photo():
             os.mkdir(path)
 
     # Capture image as PNG
-    image_name, image_ext = camera.capture_image(path=image_paths[0], res=res)
+    image_ext = "png"
+    image_name = gen_filename(image_ext, path=image_paths[0])
+    camera.capture_image(filename=image_name, format=image_ext, res=res)
 
     # Convert and save image as JPEG
     im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
