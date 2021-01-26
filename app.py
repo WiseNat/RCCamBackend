@@ -116,7 +116,7 @@ def face_detection():
     # Image stream capture and decode for OpenCV
     stream = io.BytesIO()
     camera.capture_image(stream, format="jpeg")
-    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+    data = np.frombuffer(stream.getvalue(), dtype=np.uint8)
     img = cv.imdecode(data, 1)
 
     # Image manipulation and saving
