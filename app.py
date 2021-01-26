@@ -122,7 +122,17 @@ def face_detection():
     # Image manipulation and saving
     img_grey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     img_grey = cv.equalizeHist(img_grey)
-    cv.imwrite("result.png", img_grey)
+
+    # Run face detection
+    cascade = cv.CascadeClassifier("face_detect.xml")
+    faces = cascade.detectMultiScale(img_grey, scaleFactor=1.1, minNeighbors=7, flags=cv.CASCADE_SCALE_IMAGE)
+
+    # Apply bounding boxes
+    for (x, y, w, h) in faces:
+        cv.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+    # Write image with bounding box
+    cv.imwrite("result.png", img)
 
     return redirect(url_for("main_page"))
 
