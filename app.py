@@ -1,8 +1,11 @@
+import io
 import os
 import re
 import time
 
+import numpy as np
 from PIL import Image
+import cv2 as cv
 from flask import Flask, send_from_directory, url_for, redirect, render_template, Response
 from flask import request
 
@@ -106,6 +109,22 @@ def take_photo():
 @web_app.route("/get_photo/<path:filename>")
 def get_photo(filename):
     return send_from_directory("compressed_photos/", filename, as_attachment=True)
+
+
+@web_app.route("/face_detection", methods=["POST", "GET"])
+def face_detection():
+    # Image stream capture and decode for OpenCV
+    stream = io.BytesIO()
+    camera.capture_image(stream, format="jpeg")
+    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+    img = cv.imdecode(data, 1)
+
+    # Image manipulation and saving
+    img_grey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    img_grey = cv.equalizeHist(img_grey)
+    cv.imwrite("result.png", img_grey)
+
+    return redirect(url_for("main_page"))
 
 
 if __name__ == "__main__":
