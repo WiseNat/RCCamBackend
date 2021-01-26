@@ -125,7 +125,11 @@ def face_detection():
 
     # Run face detection
     cascade = cv.CascadeClassifier("face_detect.xml")
-    faces = cascade.detectMultiScale(img_grey, scaleFactor=1.1, minNeighbors=7, flags=cv.CASCADE_SCALE_IMAGE)
+    faces = cascade.detectMultiScale(img_grey,
+                                     scaleFactor=1.05,
+                                     minNeighbors=3,
+                                     minSize=(70, 70),
+                                     flags=cv.CASCADE_SCALE_IMAGE)
 
     # Apply bounding boxes
     for (x, y, w, h) in faces:
