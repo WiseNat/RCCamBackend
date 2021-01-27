@@ -94,16 +94,17 @@ def take_photo():
 
     # Capture image as PNG
     image_ext = "png"
-    image_name = gen_filename(image_ext, path=image_paths[0])
-    camera.capture_image(filename=image_name, format=image_ext, res=res)
+    image_location = f"{image_paths[0]}{gen_filename(image_ext, path=image_paths[0])}.{image_ext}"
+    camera.capture_image(filename=image_location, res=res)
 
     # Convert and save image as JPEG
-    im = Image.open(f"{image_paths[0]}{image_name}.{image_ext}").convert("RGB")
+    im = Image.open(image_location).convert("RGB")
     image_ext = "jpeg"
-    jpeg_name = f"{gen_filename(image_ext, image_paths[1])}.{image_ext}"
-    im.save(f"{image_paths[1]}{jpeg_name}")  # JPEG
+    image_name = f"{gen_filename(image_ext, path=image_paths[1])}.{image_ext}"
+    im.save(f"{image_paths[1]}{image_name}")  # JPEG
+    print(f"Took photo: {image_paths[1]}{image_name}")
 
-    return send_from_directory(image_paths[1], jpeg_name, as_attachment=True)
+    return send_from_directory(image_paths[1], image_name, as_attachment=True)
 
 
 @web_app.route("/get_photo/<path:filename>")

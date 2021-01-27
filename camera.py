@@ -12,6 +12,9 @@ def gen_filename(ext, path=""):
     date = datetime.today()
     filename = f"{date.day}-{date.month}-{date.year}-no{counter}"
 
+    if path[-1] != "/":
+        path += "/"
+
     while True:
         if os.path.isfile(f"{path}{filename}.{ext}"):  # Increment counter if filename already exists
             counter += 1
@@ -19,7 +22,7 @@ def gen_filename(ext, path=""):
         else:  # Filename doesn't already exist, end loop
             break
 
-    return filename
+    return f"{filename}"
 
 
 def reduceResolution(cur_res, max_res):
@@ -80,6 +83,7 @@ class Camera:
                 pass
 
         self.camera.capture(filename, format=format)
+        print(f"Took photo: {filename}")
 
         # Reverting to live stream resolution
         while True:
