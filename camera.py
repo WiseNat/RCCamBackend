@@ -44,7 +44,7 @@ class Camera:
     camera = picamera.PiCamera()
 
     # camera.hflip = True
-    # camera.vflip = True
+    camera.vflip = True
 
     def initialise(self):
         if Camera.thread is None:
