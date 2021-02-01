@@ -29,3 +29,4 @@ class ServoController:
 
             time.sleep(tm)
             servo.ChangeDutyCycle(0)
+            time.sleep(tm)

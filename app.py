@@ -136,8 +136,39 @@ def face_detection():
     for (x, y, w, h) in faces:
         cv.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-    # Write image with bounding box
-    cv.imwrite("result.png", img)
+    # Calculating servo rotation
+    height, width, channel = img.shape
+
+    print(width, height)
+
+    # Calculating average co-ord
+    mid_coords = [(x + (w / 2), y + (h / 2)) for (x, y, w, h) in faces]
+
+    if len(mid_coords) != 0:
+        total = [sum(i) for i in zip(*mid_coords)]
+        average = (round(total[0] / len(mid_coords)), round(height - total[1] / len(mid_coords)))
+        print(f"Average: {average}")
+
+        vals = [(10 * loc - 5 * dim) / arc for arc, loc, dim in zip((1920*3, 1080*3), average, (width, height))]
+
+        yaw = round(ser_app.yaw.current + vals[0], 1)
+        if yaw < 0:
+            yaw = 0
+        elif yaw > 10:
+            yaw = 10
+        ser_app.change_servo(ser_app.yaw, yaw)
+        print(f"Yaw rotation set to {yaw}")
+
+        pitch = round(ser_app.pitch.current - vals[1], 1)
+        if pitch < 0:
+            pitch = 0
+        elif pitch > 10:
+            pitch = 10
+        ser_app.change_servo(ser_app.pitch, pitch)
+        print(f"Pitch rotation set to {pitch}")
+
+        # Write image with bounding box
+        cv.imwrite("result.png", img)
 
     return redirect(url_for("main_page"))
 
