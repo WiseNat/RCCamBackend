@@ -114,9 +114,18 @@ def get_photo(filename):
 
 @web_app.route("/face_detection", methods=["POST", "GET"])
 def face_detection():
+    # Width and Height
+    resWidth = request.args.get("w", "")
+    resHeight = request.args.get("h", "")
+
+    if (resHeight != "" or resWidth != "") and is_number(resWidth) and is_number(resHeight):
+        res = [int(resWidth), int(resHeight)]
+    else:
+        res = [1920, 1080]
+
     # Image stream capture and decode for OpenCV
     stream = io.BytesIO()
-    camera.capture_image(stream, format="jpeg")
+    camera.capture_image(stream, format="jpeg", res=res)
     data = np.frombuffer(stream.getvalue(), dtype=np.uint8)
     img = cv.imdecode(data, 1)
 
@@ -174,4 +183,6 @@ def face_detection():
 
 
 if __name__ == "__main__":
+    ser_app.change_servo(ser_app.pitch, 7)
+    ser_app.change_servo(ser_app.yaw, 7)
     web_app.run("0.0.0.0", threaded=True)
