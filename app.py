@@ -158,7 +158,7 @@ def face_detection():
         average = (round(total[0] / len(mid_coords)), round(height - total[1] / len(mid_coords)))
         print(f"Average: {average}")
 
-        vals = [(10 * loc - 5 * dim) / arc for arc, loc, dim in zip((1920*3, 1080*3), average, (width, height))]
+        vals = [(10 * loc - 5 * dim) / arc for arc, loc, dim in zip((1920 * 3, 1080 * 3), average, (width, height))]
 
         yaw = round(ser_app.yaw.current + vals[0], 1)
         if yaw < 0:
@@ -180,6 +180,16 @@ def face_detection():
         cv.imwrite("result.png", img)
 
     return redirect(url_for("main_page"))
+
+
+@web_app.after_request
+def add_header(response):
+    response.cache_control.max_age = 0
+    response.cache_control.no_cache = True
+    response.cache_control.no_store = True
+    response.cache_control.must_revalidate = True
+    response.cache_control.proxy_revalidate = True
+    return response
 
 
 if __name__ == "__main__":
