@@ -12,6 +12,9 @@ def gen_filename(ext, path=""):
     date = datetime.today()
     filename = f"{date.day}-{date.month}-{date.year}-no{counter}"
 
+    if path[-1] != "/":
+        path += "/"
+
     while True:
         if os.path.isfile(f"{path}{filename}.{ext}"):  # Increment counter if filename already exists
             counter += 1
@@ -19,7 +22,7 @@ def gen_filename(ext, path=""):
         else:  # Filename doesn't already exist, end loop
             break
 
-    return filename
+    return f"{filename}"
 
 
 def reduceResolution(cur_res, max_res):
@@ -41,7 +44,7 @@ class Camera:
     camera = picamera.PiCamera()
 
     # camera.hflip = True
-    # camera.vflip = True
+    camera.vflip = True
 
     def initialise(self):
         if Camera.thread is None:
@@ -58,24 +61,18 @@ class Camera:
         self.initialise()
         return self.frame
 
-    def capture_image(self, path="", ext="png", res=None):
+    def capture_image(self, filename="", format="png", res=None):
+        # Changing resolution
         maxRes = (1920, 1080)
         if res is None:
             res = maxRes
         elif res[0] > maxRes[0] or res[1] > maxRes[1]:
             res = reduceResolution(res, maxRes)
 
+        # Stopping video feed
         Camera.curCapture = True
-
         while Camera.curStream is True:
             pass
-
-        # Appending a / to the end of path if it is missing
-        if path != "" and path[-1] != "/":
-            path += "/"
-
-        # Generating filename
-        filename = gen_filename(ext, path=path)
 
         # Changing to higher resolution for capturing image
         while True:
@@ -85,7 +82,8 @@ class Camera:
             except picamera.exc.PiCameraMMALError:
                 pass
 
-        self.camera.capture(f"{path}{filename}.{ext}")
+        self.camera.capture(filename, format=format)
+        print(f"Took photo: {filename}")
 
         # Reverting to live stream resolution
         while True:
@@ -96,8 +94,6 @@ class Camera:
                 pass
 
         Camera.curCapture = False
-
-        return filename, ext
 
     @classmethod
     def _thread(cls):
