@@ -70,12 +70,12 @@ def servo():
     return redirect(url_for("main_page"))
 
 
-@web_app.route("/take_photo/", methods=["POST", "GET"])
+@web_app.route("/take_photo/")
 def take_photo():
     # Get args and declare if missing
-    dur = request.values.get("dur", "")
-    resWidth = request.values.get("w", "")
-    resHeight = request.values.get("h", "")
+    dur = request.args.get("dur", "")
+    resWidth = request.args.get("w", "")
+    resHeight = request.args.get("h", "")
 
     if (resHeight != "" or resWidth != "") and is_number(resWidth) and is_number(resHeight):
         res = [int(resWidth), int(resHeight)]
@@ -104,9 +104,7 @@ def take_photo():
     im.save(f"{image_paths[1]}{image_name}")  # JPEG
     print(f"Took photo: {image_paths[1]}{image_name}")
 
-    if request.method == "GET":
-        return send_from_directory(image_paths[1], image_name, as_attachment=True)
-    return Response(image_name)
+    return send_from_directory(image_paths[1], image_name, as_attachment=True)
 
 
 @web_app.route("/get_photo/<path:filename>")
