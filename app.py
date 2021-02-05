@@ -4,7 +4,7 @@ import re
 import time
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFile
 import cv2 as cv
 from flask import Flask, send_from_directory, url_for, redirect, render_template, Response
 from flask import request
@@ -19,6 +19,8 @@ web_app = Flask(__name__)
 
 ser_app = ServoController()
 camera = Camera()
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def generator(cam):
