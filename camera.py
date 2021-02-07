@@ -1,7 +1,7 @@
-import os
-import time
 import io
+import os
 import threading
+import time
 from datetime import datetime
 
 import picamera
@@ -40,6 +40,7 @@ class Camera:
 
     curCapture = False
     curStream = False
+    capQueue = []
 
     camera = picamera.PiCamera()
 
@@ -62,6 +63,14 @@ class Camera:
         return self.frame
 
     def capture_image(self, filename="", format="png", res=None):
+        # Request queue
+        id = 1 if len(Camera.capQueue) == 0 else Camera.capQueue[-1] + 1
+        Camera.capQueue.append(id)
+        while Camera.capQueue[0] != id:
+            pass
+
+        print(f"CI: Now serving request '{id}'")
+
         # Changing resolution
         maxRes = (1920, 1080)
         if res is None:
@@ -85,15 +94,20 @@ class Camera:
         self.camera.capture(filename, format=format)
         print(f"Took photo: {filename}")
 
-        # Reverting to live stream resolution
-        while True:
-            try:
-                self.camera.resolution = (320, 240)
-                break
-            except picamera.exc.PiCameraMMALError:
-                pass
+        # Reverting to live stream resolution if no requests in queue
+        if len(Camera.capQueue) != 0:
+            while True:
+                try:
+                    self.camera.resolution = (320, 240)
+                    break
+                except picamera.exc.PiCameraMMALError:
+                    pass
 
-        Camera.curCapture = False
+            Camera.curCapture = False
+
+        # Removing this request from the queue
+        del Camera.capQueue[0]
+        print(f"CI: Finished serving request '{id}'")
 
     @classmethod
     def _thread(cls):
